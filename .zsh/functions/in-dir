@@ -1,0 +1,23 @@
+#! zsh function in-dir
+# in-dir -c <cmdline> <dir>
+# in-dir <dir> <cmdline>
+
+setopt localoptions errreturn nounset # xtrace
+
+local optname cmd go_back=1 dir
+
+while getopts cx: optname; do
+  case $optname in
+  c) cmd="$OPTARG" ;;
+  x) go_back=0 ;;
+  esac
+done; shift $((OPTIND - 1))
+
+dir=${1:?}; shift
+
+local -r owd=$PWD; cd $dir
+if (( go_back )); then
+  { eval "$cmd $*" } always { cd $owd }
+else
+  eval "$cmd $*"
+fi
