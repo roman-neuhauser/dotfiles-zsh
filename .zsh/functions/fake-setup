@@ -1,0 +1,13 @@
+#! zsh function fake-setup
+
+setopt localoptions errreturn nounset
+
+if (( $+FAKE_BINDIR )); then
+  path[(i)$FAKE_BINDIR]=()
+fi
+
+declare -gx FAKE_BINDIR
+FAKE_BINDIR=$(mktemp -d)
+path=($FAKE_BINDIR $path)
+
+rehash

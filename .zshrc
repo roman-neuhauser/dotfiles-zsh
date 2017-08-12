@@ -38,32 +38,6 @@ bindkey '^Xx' all-matches
 # list of suffices to ignore when completing filenames
 fignore=(\~ \.swp)
 
-function prompt-git-info # {{{
-{
-  git rev-parse --is-inside-work-tree &>/dev/null || return
-
-  local branch=${${$(git symbolic-ref -q --short HEAD 2>/dev/null)}:-'(-)'}
-  local cdiff=' ' wdiff=' '
-  local -a chars
-  local -r tab="$(printf '\t')"
-  local cchars=${(j::)${(ou)${(@f)"$(git diff --name-status --cached)"}%%$tab*}}
-  local wchars=${(j::)${(ou)${(@f)"$(git diff --name-status         )"}%%$tab*}}
-  chars=(${cchars} : ${wchars})
-  chars=${${(j::)chars}:#:}
-  print -f '%s%s' $branch ${chars:+ $chars}
-} # }}}
-
-function precmd # {{{
-{
-  local d='%3~'
-  local h=$HISTCMD
-  local m=${HOST%%.*}
-  local p='%(!~:~.)'
-  local u=$USERNAME
-  local git="$(prompt-git-info)"
-  PROMPT="%S%B%F{yellow}%K{black}$u@$m $d${git:+ $git} %j $h %? $p%f%k%b%s "
-} # }}}
-
 alias halt='shutdown -h now'
 alias reboot='shutdown -r now'
 
@@ -77,3 +51,8 @@ zstyle ':completion:all-matches::::' completer _all_matches _complete
 zstyle ':completion:all-matches:*' insert true
 zle -C all-matches complete-word _generic
 
+declare hookd=~/.zsh/hooks
+
+fpath=($hookd $fpath)
+
+autoload -Uz $hookd/*(.:t)

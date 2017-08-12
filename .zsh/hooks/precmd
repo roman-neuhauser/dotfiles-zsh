@@ -1,0 +1,5 @@
+#! zsh function precmd
+
+setopt localoptions errreturn
+
+load-hook precmd

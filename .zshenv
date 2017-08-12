@@ -151,4 +151,4 @@ setopt normstarsilent
 
 fpath=(~/.zsh/functions $fpath)
 
-autoload -U in-dir
+autoload -Uz ~/.zsh/functions/*(.:t)

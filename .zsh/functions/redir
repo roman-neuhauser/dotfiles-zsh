@@ -1,0 +1,33 @@
+#! zsh function redir
+# redir [OPTS] [-0 FILE] [OPTS] [-1 FILE] [OPTS] [-2 FILE] CMD [ARG...]
+# OPTS:
+#   -A        open following fds using >
+#   -a        open following fds using >>
+#   -C        open following fds under 'setopt noclobber'
+#   -c        open following fds under 'setopt clobber'
+
+setopt localoptions errreturn nounset
+
+declare -i append=0 o0=0 o1=1 o2=2 ox=-1
+declare optname OPTARG OPTIND
+
+while getopts 0:1:2:AaCc optname; do
+  ox=-1
+  case $optname in
+  A) append=0 ;;
+  a) append=1 ;;
+  C) setopt noclobber ;;
+  c) setopt clobber ;;
+  0) exec {o0}<$OPTARG ;;
+  1|2)
+    if (( append )); then
+      exec {ox}>>$OPTARG
+    else
+      exec {ox}>$OPTARG
+    fi
+    : ${(P)${:-o$optname}::=$ox}
+  ;;
+  esac
+done; shift $((OPTIND - 1))
+
+"$@" <&${o0} 1>&${o1} 2>&${o2}

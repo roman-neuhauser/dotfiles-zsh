@@ -1,0 +1,5 @@
+#! zsh function chpwd
+
+setopt localoptions errreturn
+
+load-hook chpwd

@@ -1,0 +1,5 @@
+#! zsh function x
+
+setopt localoptions errreturn nounset
+
+exec startx

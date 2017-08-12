@@ -1,0 +1,11 @@
+#! zsh function prompt-git-info
+
+setopt localoptions errreturn nounset
+
+git rev-parse --is-inside-work-tree &>/dev/null || return
+
+local branch=${${$(git symbolic-ref -q --short HEAD 2>/dev/null)}:-'(-)'}
+local cchars=${(j::)${(ou)${(@f)"$(git diff --name-status --cached)"}%%$'\t'*}}
+local wchars=${(j::)${(ou)${(@f)"$(git diff --name-status         )"}%%$'\t'*}}
+local chars=${${(j::):-$cchars:$wchars}:#:}
+print -f '%s%s' -- $branch ${chars:+ $chars}

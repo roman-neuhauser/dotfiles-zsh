@@ -1,0 +1,17 @@
+#! zsh function load-hook
+
+setopt localoptions errreturn nounset
+
+declare -r hook=$1
+declare -r hookp=${hook}_functions
+declare -r hookd=~/.zsh/hooks/$hook.d
+declare -a hooks
+declare -ag $hookp
+
+[[ -z ${fpath[(re)$hookd]:-} ]] || return
+hooks=($hookd/*(.:t))
+(( $#hooks )) || return
+
+fpath=($hookd $fpath)
+autoload -Uz $hooks
+: ${(AP)=hookp::=$hooks}

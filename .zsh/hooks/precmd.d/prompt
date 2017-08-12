@@ -1,0 +1,11 @@
+#! zsh function prompt
+
+setopt localoptions errreturn nounset
+
+local d='%3~'
+local h=$HISTCMD
+local m=${HOST%%.*}
+local p='%(!~:~.)'
+local u=$USERNAME
+local git="$(prompt-git-info)"
+PROMPT="%S%B%F{yellow}%K{black}$u@$m $d${git:+ $git} %j $h %? $p%f%k%b%s "
